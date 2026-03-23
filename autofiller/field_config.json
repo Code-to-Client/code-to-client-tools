@@ -1,0 +1,126 @@
+{
+  "field_values": {
+    "name": "Joel Gardi",
+    "first_name": "Joel",
+    "last_name": "Gardi",
+    "company": "Gardell, LLC",
+    "email": "contact@gardell.com",
+    "subject": "Collaborate on Shaping AI for Bookkeeping Workflows",
+    "message": "Hello,\nWe're reaching out to bookkeeping professionals to help us design a practical AI solution for document intake.\nWe're seeking a design partner to collaborate with, ensuring we directly address real workflow challenges.\nIf you're open to exploring this partnership, you can find more details here: https://gardell.com?cf=1.\nSincerely,\nJoel Gardi",
+    "phone": "360-322-4573"
+  },
+  
+  "selectors": {
+    "name": [
+      "input[name=\"name\"]",
+      "input[name=\"your-name\"]",
+      "input[name=\"contact-name\"]",
+      "input[name*=\"name\"]",
+      "input[id*=\"name\"]",
+      "input[id=\"name\"]",
+      "input[id=\"your-name\"]",
+      "input[placeholder*=\"name\"]",
+      "input[placeholder*=\"Name\"]",
+      "input[autocomplete=\"name\"]"
+    ],
+    "email": [
+      "input[type=\"email\"]",
+      "input[name*=\"mail\"]",
+      "input[id*=\"mail\"]",
+      "input[placeholder*=\"mail\"]"
+    ],
+    "subject": [
+      "input[name=\"subject\"]",
+      "input[name=\"your-subject\"]",
+      "input[name=\"contact-subject\"]",
+      "input[name*=\"subject\"]",
+      "input[id*=\"subject\"]",
+      "input[id=\"subject\"]",
+      "input[id=\"your-subject\"]",
+      "input[placeholder*=\"subject\"]",
+      "input[placeholder*=\"Subject\"]"
+    ],
+    "message": [
+      "textarea[name=\"message\"]",
+      "textarea[name*=\"message\"]",
+      "textarea[id*=\"message\"]",
+      "textarea[placeholder*=\"message\"]",
+      "textarea"
+    ],
+    "phone": [
+      "input[type=\"tel\"]",
+      "input[name=\"phone\"]",
+      "input[name=\"your-phone\"]",
+      "input[name=\"phone-number\"]",
+      "input[name=\"phone_number\"]",
+      "input[name=\"contact-phone\"]",
+      "input[name*=\"phone\"]",
+      "input[id*=\"phone\"]",
+      "input[id=\"phone\"]",
+      "input[id=\"your-phone\"]",
+      "input[id=\"phone-number\"]",
+      "input[placeholder*=\"phone\"]",
+      "input[placeholder*=\"Phone\"]",
+      "input[placeholder*=\"Phone Number\"]",
+      "input[autocomplete=\"tel\"]"
+    ],
+    "first_name": [
+      "input[name=\"first-name\"]",
+      "input[name=\"first_name\"]",
+      "input[name=\"firstName\"]",
+      "input[name=\"fname\"]",
+      "input[name*=\"first\"]",
+      "input[id*=\"first\"]",
+      "input[id=\"first-name\"]",
+      "input[id=\"first_name\"]",
+      "input[id=\"firstName\"]",
+      "input[id=\"fname\"]",
+      "input[placeholder*=\"first\"]",
+      "input[placeholder*=\"First\"]",
+      "input[autocomplete=\"given-name\"]"
+    ],
+    "last_name": [
+      "input[name=\"last-name\"]",
+      "input[name=\"last_name\"]",
+      "input[name=\"lastName\"]",
+      "input[name=\"lname\"]",
+      "input[name=\"surname\"]",
+      "input[name*=\"last\"]",
+      "input[id*=\"last\"]",
+      "input[id=\"last-name\"]",
+      "input[id=\"last_name\"]",
+      "input[id=\"lastName\"]",
+      "input[id=\"lname\"]",
+      "input[id=\"surname\"]",
+      "input[placeholder*=\"last\"]",
+      "input[placeholder*=\"Last\"]",
+      "input[placeholder*=\"Surname\"]",
+      "input[autocomplete=\"family-name\"]"
+    ],
+    "company": [
+      "input[name=\"company\"]",
+      "input[name=\"company-name\"]",
+      "input[name=\"company_name\"]",
+      "input[name=\"companyName\"]",
+      "input[name=\"organization\"]",
+      "input[name=\"org\"]",
+      "input[name=\"business-name\"]",
+      "input[name=\"business_name\"]",
+      "input[name*=\"company\"]",
+      "input[name*=\"organization\"]",
+      "input[id*=\"company\"]",
+      "input[id=\"company\"]",
+      "input[id=\"company-name\"]",
+      "input[id=\"company_name\"]",
+      "input[id=\"organization\"]",
+      "input[id=\"org\"]",
+      "input[id=\"business-name\"]",
+      "input[placeholder*=\"company\"]",
+      "input[placeholder*=\"Company\"]",
+      "input[placeholder*=\"organization\"]",
+      "input[placeholder*=\"Organization\"]",
+      "input[placeholder*=\"business\"]",
+      "input[autocomplete=\"organization\"]"
+    ]
+  }
+}

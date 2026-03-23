@@ -1,0 +1,105 @@
+/* Global app styles and Element Plus variable overrides.
+   Primary: --el-color-primary (set via usePrimaryColor).
+   Secondary: --app-secondary (set via useSecondaryColor). */
+
+/* Base typography: larger, less faint body text */
+html {
+  font-size: 16px;
+}
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 500;
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+}
+html.dark body {
+  color: #e5e7eb;
+}
+
+/* Element Plus: stronger text in light mode so labels/content aren’t too faint */
+html:not(.dark) {
+  --el-text-color-primary: #111827;
+  --el-text-color-regular: #374151;
+  --el-text-color-secondary: #4b5563;
+  --el-text-color-placeholder: #6b7280;
+}
+
+/* Primary button: hover/active use app primary, not default EP blue */
+html .el-button--primary {
+  /* Slightly brighter hover so the transition is clearly visible */
+  --el-button-hover-bg-color: color-mix(in srgb, var(--el-color-primary) 70%, white);
+  --el-button-hover-border-color: color-mix(in srgb, var(--el-color-primary) 70%, white);
+  /* Active state a bit darker than the base */
+  --el-button-active-bg-color: color-mix(in srgb, var(--el-color-primary) 85%, black);
+  --el-button-active-border-color: color-mix(in srgb, var(--el-color-primary) 85%, black);
+}
+html .el-button--primary:hover {
+  background-color: var(--el-button-hover-bg-color) !important;
+  border-color: var(--el-button-hover-border-color) !important;
+  color: var(--el-button-hover-text-color) !important;
+}
+html .el-button--primary:active {
+  background-color: var(--el-button-active-bg-color) !important;
+  border-color: var(--el-button-active-border-color) !important;
+  color: var(--el-button-hover-text-color) !important;
+}
+
+/* Dark mode: page background */
+html.dark body {
+  background: linear-gradient(180deg, #0f1419 0%, #171717 100%);
+}
+
+/* Main content area: faint background for better separation */
+.page-content {
+  background-color: #f8fafc;
+  min-height: calc(100vh - 3.5rem);
+}
+html.dark .page-content {
+  background-color: rgba(23, 23, 23, 0.6);
+}
+
+/* Header: white with faint gray bottom border */
+html:not(.dark) .nav-bar {
+  background-color: #fff !important;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Nav link hover/active use secondary color */
+.nav-bar .nav-link:hover,
+.nav-bar .nav-link-active {
+  color: var(--app-secondary) !important;
+}
+
+/* Dashboard page title: short primary underline only */
+.dashboard-title-underline {
+  background-color: var(--el-color-primary) !important;
+}
+
+/* Section headings with a small accent (primary or secondary) */
+.section-title {
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--el-color-primary);
+}
+.section-title--secondary {
+  border-left-color: var(--app-secondary);
+}
+
+/* Metric card value uses secondary color */
+.metric-value {
+  color: var(--app-secondary);
+}
+
+/* Toned-down secondary for links (e.g. company name, contact URL on Contacts page) */
+.link-secondary-muted {
+  color: color-mix(in srgb, var(--app-secondary) 68%, var(--el-text-color-regular));
+}
+.link-secondary-muted:hover {
+  color: var(--app-secondary);
+}
+/* Dark mode: soften link so contact URLs aren’t too bright */
+html.dark .link-secondary-muted {
+  opacity: 0.65;
+}
+html.dark .link-secondary-muted:hover {
+  opacity: 1;
+}

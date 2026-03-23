@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "tracker-server"
+version = "0.1.0"
+description = ""
+authors = ["Joel Gardi <joel@gardell.com>"]
+readme = "README.md"
+packages = [{include = "tracker_server", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.115"
+uvicorn = {extras = ["standard"], version = "^0.32"}
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
