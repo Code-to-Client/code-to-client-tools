@@ -1,5 +1,5 @@
 # Code to Client — Free Tools
-TEST
+
 Free developer tools for readers of [*Code to Client: Job Market in Crisis*](https://code-to-client.com) book.
 
 These tools support the outreach framework described in the book — helping developers find consulting clients through contact forms, design partners, and semi-automation. No cold calls. No fake confidence.
