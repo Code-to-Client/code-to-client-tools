@@ -44,7 +44,7 @@ npm install
 npm run dev
 ```
 
-See [`tracker-client/README.md`](tracker-client/README.md) and [`tracker-server/README.md`](tracker-server/README.md) for full setup instructions.
+See [autofiller/README.md](autofiller/README.md),[`tracker-client/README.md`](tracker-client/README.md) and [`tracker-server/README.md`](tracker-server/README.md) for full setup instructions.
 
 ---
 
