@@ -12,7 +12,7 @@ This repository contains three projects:
 
 - **`autofiller`**, a Python CLI tool that automates pre-filling contact forms in a browser; 
 - **`tracker-client`**, a Vue frontend for managing and visualizing your outreach pipeline; and 
-- **`tracker-server`**, a Python backend API that persists and serves your contact data. The tracker client and server share a local `contacts.db` SQLite database. 
+- **`tracker-server`**, a Python backend API that persists and serves your contact data. The tracker server shares a local `contacts.db` SQLite database with the autofiller tool.
 
 Together, the autofiller and tracker form a complete semi-automated outreach workflow — from first contact to signed client.
 

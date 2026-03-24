@@ -2,6 +2,8 @@
 
 A Python tool that navigates to contact form pages, pre-fills the fields with your contact information and outreach message, then waits for you to review and submit manually. Supports LLM-powered field detection (optional) with heuristic fallback.
 
+For full technical and functional requirements, see [Autofiller Requirements.md](Autofiller%20Requirements.md).
+
 ## Features
 
 - **Human-in-the-loop**: Pre-fills the form, then waits for you to review and submit manually
