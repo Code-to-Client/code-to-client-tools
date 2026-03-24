@@ -29,7 +29,7 @@ autofiller/
 └── .env               # LLM API key (optional)
 ```
 
-> **Note:** `contacts/` and `params/` are suggestions, not requirements. You can place these files anywhere and organize them however makes sense for your workflow — for example, with subfolders per vertical (`contacts/bookkeeping/`, `params/bookkeeping/`) or any other structure. The params file just needs to point to the correct path for `contact_url_file`.
+> **Note:** `contacts/` and `params/` are suggestions, not requirements. You can place these files anywhere and organize them however makes sense for your workflow — for example, with subfolders per vertical (`contacts/legal/`, `params/legal/`) or any other structure. The params file just needs to point to the correct path for `contact_url_file`.
 
 ## Setup
 
@@ -89,11 +89,12 @@ Each outreach batch (a specific vertical + location + URL list) needs its own pa
 
 Create a JSON file in `contacts/` listing the contact form URLs for this batch.
 
-Naming convention: `contacts/<vertical>-contacts-<city>.json`
+Suggested naming: `contacts-<vertical>-<city>.json`
+Sample file `contacts-legal-portland.json` content:
 
 ```json
 [
-  "https://example-bookkeeper.com/contact",
+  "https://example-legal.com/contact",
   "https://another-firm.com/contact-us"
 ]
 ```
@@ -102,10 +103,13 @@ Naming convention: `contacts/<vertical>-contacts-<city>.json`
 
 Create a JSON params file in `params/` that points to the contact pages file and describes the batch context saved to the database.
 
+Suggested naming: `params-<vertical>-<city>.json`
+Sample params file `params-legal-portland.json`:
+
 ```json
 {
-  "vertical": "Bookkeeping",
-  "contact_url_file": "contacts/bookkeeper-contacts-portland.json",
+  "vertical": "Legal",
+  "contact_url_file": "contacts/contacts-legal-portland.json",
   "city": "Portland",
   "state": "OR",
   "zip": "97201"
@@ -121,16 +125,16 @@ The project includes a `maskfile.md` with shorthand commands for common tasks. U
 | mask command | Equivalent command | Description |
 |---|---|---|
 | `mask db` | `python3 ../tracker-server/create_db.py` | Create the shared contacts database and tables |
-| `mask main` | `poetry run python -m autofiller.main params/Bookkeeping-portland.json` | Run the autofiller for a batch |
+| `mask main` | `poetry run python -m autofiller.main params/params-legal-portland.json` | Run the autofiller for a batch |
 
 ## Running
 
 ```bash
 # Positional
-poetry run python -m autofiller.main params/bookkeeper-portland.json
+poetry run python -m autofiller.main params/params-legal-portland.json
 
 # Named flag
-poetry run python -m autofiller.main --params_file params/bookkeeper-portland.json
+poetry run python -m autofiller.main --params_file params/params-legal-portland.json
 ```
 
 ### Arguments
@@ -143,7 +147,7 @@ poetry run python -m autofiller.main --params_file params/bookkeeper-portland.js
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `vertical` | Yes | Vertical label saved to the database (e.g. `Bookkeeping`) |
+| `vertical` | Yes | Vertical label saved to the database (e.g. `Legal`) |
 | `contact_url_file` | Yes | Path to JSON file of contact form URLs |
 | `city` | No | City saved to the database |
 | `state` | No | State saved to the database |
