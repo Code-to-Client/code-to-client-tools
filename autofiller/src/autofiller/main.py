@@ -14,7 +14,6 @@ from typing import Dict
 from playwright.sync_api import Page, sync_playwright
 
 from autofiller.config import Config
-from autofiller.field_config import get_field_config
 from autofiller.db import DB
 from autofiller.form_detection import extract_form_html, find_best_contact_form
 from autofiller.heuristics import find_and_fill_first, get_heuristic_selectors
@@ -290,22 +289,19 @@ def _init_db() -> None:
 
 def main(
     contact_pages_file_path: Path,
+    field_values: Dict[str, str],
     vertical: str | None = None,
     city: str | None = None,
     state: str | None = None,
     zip_code: str | None = None,
 ) -> None:
     """
-    Load URLs from a contact pages JSON file and field values from field_config.json,
-    then process all URLs in one browser session.
+    Load URLs from a contact pages JSON file and process all URLs in one browser session.
     """
     _init_db()
 
-    # Load field values from field_config.json
-    config = get_field_config()
-    field_values: Dict[str, str] = config.get("field_values", {})
     if not field_values:
-        print("Warning: No field_values found in field_config.json. Using empty dict.")
+        print("Warning: No field_values provided. Using empty dict.")
 
     # Load URLs from the contact pages file
     urls: list[str] = []
@@ -314,7 +310,7 @@ def main(
             with open(contact_pages_file_path, "r", encoding="utf-8") as f:
                 urls = json.load(f)
         else:
-            print(f"Error: {contact_pages_file_path} not found. Add contact_pages.json with a list of URLs.")
+            print(f"Error: {contact_pages_file_path} not found. Add the missing contacts file.")
             return
     except (json.JSONDecodeError, IOError) as e:  # noqa: BLE001
         print(f"Warning: Could not load {contact_pages_file_path}: {e}")
@@ -352,8 +348,13 @@ if __name__ == "__main__":
     if not contact_url_file:
         parser.error("params file must contain 'contact_url_file'")
 
+    field_values = params.get("field_values", {})
+    if not field_values:
+        print("Warning: No field_values found in params file. Using empty dict.")
+
     main(
         Path(contact_url_file),
+        field_values=field_values,
         vertical=params.get("vertical") or None,
         city=params.get("city") or None,
         state=params.get("state") or None,

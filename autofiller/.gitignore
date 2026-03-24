@@ -39,8 +39,6 @@ env/
 # OS
 .DS_Store
 Thumbs.db
-/processed.csv
-/contact_pages.json
 
 # Autofiller user data
 contacts/

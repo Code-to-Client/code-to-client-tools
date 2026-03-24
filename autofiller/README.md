@@ -9,7 +9,7 @@ A Python tool that navigates to contact form pages, pre-fills the fields with yo
 - **Duplicate skipping**: URLs already in the shared database are skipped automatically
 - **LLM-powered field detection**: Optional integration with Together.ai, OpenAI, Ollama, or any litellm-compatible provider
 - **Heuristic fallback**: Always works, even without LLM configuration
-- **JSON configuration**: Customize field selectors and values via `field_config.json`
+- **Per-batch field values**: Sender identity and message live in the params file, so each batch can use different values
 
 ## Installation
 
@@ -24,7 +24,6 @@ poetry run playwright install chromium
 autofiller/
 ├── contacts/          # Contact URL files — one JSON array of URLs per batch
 ├── params/            # Runtime params files — one JSON object per batch
-├── field_config.json  # Your sender identity (name, email, message, selectors)
 ├── src/autofiller/    # Source code
 └── .env               # LLM API key (optional)
 ```
@@ -32,13 +31,6 @@ autofiller/
 > **Note:** `contacts/` and `params/` are suggestions, not requirements. You can place these files anywhere and organize them however makes sense for your workflow — for example, with subfolders per vertical (`contacts/legal/`, `params/legal/`) or any other structure. The params file just needs to point to the correct path for `contact_url_file`.
 
 ## Setup
-
-There are two distinct types of files to prepare:
-
-- **Configuration files** — set once per installation; describe *who you are* and *how to fill forms*.
-- **Runtime params files** — one per outreach batch; describe *what to run* (which vertical, location, and URL list).
-
----
 
 ### One-time configuration
 
@@ -48,28 +40,9 @@ There are two distinct types of files to prepare:
 python3 ../tracker-server/create_db.py
 ```
 
-This creates `Tools/contacts.db` — the shared database used by both the autofiller and the tracker server.
+This creates `code-to-client-tools/contacts.db` — the shared database used by both the autofiller and the tracker server.
 
-#### 2. Configure your field values (`field_config.json`)
-
-Edit `field_config.json` with your name, email, company, and outreach message. This is your sender identity — it stays the same across all batches.
-
-```json
-{
-  "field_values": {
-    "name": "Your Name",
-    "first_name": "Your",
-    "last_name": "Name",
-    "email": "you@example.com",
-    "phone": "555-555-5555",
-    "company": "Your Company",
-    "subject": "Inquiry",
-    "message": "Your outreach message here."
-  }
-}
-```
-
-#### 3. (Optional) Configure LLM
+#### 2. (Optional) Configure LLM
 
 Copy `.env.example` to `.env` and add your API key:
 
@@ -79,13 +52,11 @@ LLM_API_KEY=your_api_key_here
 
 See [LLM Configuration](#llm-configuration-optional) for provider setup.
 
----
-
 ### Per-batch runtime setup
 
 Each outreach batch (a specific vertical + location + URL list) needs its own params file and contact pages file.
 
-#### 4. Prepare a contact pages file
+#### 3. Prepare a contact pages file
 
 Create a JSON file in `contacts/` listing the contact form URLs for this batch.
 
@@ -99,9 +70,9 @@ Sample file `contacts-legal-portland.json` content:
 ]
 ```
 
-#### 5. Create a params file
+#### 4. Create a params file
 
-Create a JSON params file in `params/` that points to the contact pages file and describes the batch context saved to the database.
+Create a JSON params file in `params/` that points to the contact pages file, describes the batch context saved to the database, and includes your sender identity in `field_values`.
 
 Suggested naming: `params-<vertical>-<city>.json`
 Sample params file `params-legal-portland.json`:
@@ -112,11 +83,21 @@ Sample params file `params-legal-portland.json`:
   "contact_url_file": "contacts/contacts-legal-portland.json",
   "city": "Portland",
   "state": "OR",
-  "zip": "97201"
+  "zip": "97201",
+  "field_values": {
+    "name": "Your Name",
+    "first_name": "Your",
+    "last_name": "Name",
+    "email": "you@example.com",
+    "phone": "555-555-5555",
+    "company": "Your Company",
+    "subject": "Inquiry",
+    "message": "Your outreach message here."
+  }
 }
 ```
 
-`city`, `state`, and `zip` are optional and can be omitted or set to empty strings.
+`city`, `state`, and `zip` are optional and can be omitted or set to empty strings. All fields within `field_values` are required.
 
 ## Task runner (mask) — optional
 
@@ -149,6 +130,7 @@ poetry run python -m autofiller.main --params_file params/params-legal-portland.
 |-------|----------|-------------|
 | `vertical` | Yes | Vertical label saved to the database (e.g. `Legal`) |
 | `contact_url_file` | Yes | Path to JSON file of contact form URLs |
+| `field_values` | Yes | Object with sender identity and message to pre-fill into forms |
 | `city` | No | City saved to the database |
 | `state` | No | State saved to the database |
 | `zip` | No | Postal code saved to the database |
@@ -172,7 +154,6 @@ For each URL in the file (skipping any already in the database):
 
 | File | Description |
 |------|-------------|
-| `field_config.json` | Your sender identity: field values (name, email, message) and CSS selector patterns |
 | `src/autofiller/config.py` | LLM provider, model, and path settings |
 | `.env` | `LLM_API_KEY` (required only for LLM mode) |
 
@@ -180,22 +161,22 @@ For each URL in the file (skipping any already in the database):
 
 | File | Description |
 |------|-------------|
-| `params/*.json` | Batch parameters: vertical, city, state, zip, and path to the contact pages file |
+| `params/*.json` | Batch parameters: vertical, city, state, zip, field values (sender identity + message), and path to the contact pages file |
 | `contacts/*.json` | Contact form URL lists (one per vertical/city/campaign) |
 
 ## LLM Configuration (Optional)
 
-LLM is **optional**. Without it, the tool uses heuristic CSS selectors from `field_config.json`. LLM improves accuracy for complex or non-standard forms.
+LLM is **optional**. Without it, the tool uses built-in heuristic CSS selectors. LLM improves accuracy for complex or non-standard forms.
 
 ### Enable LLM
 
 Set `LLM_API_KEY` in `.env`. All other LLM settings are in `src/autofiller/config.py`:
 
-```python
-LLM_PROVIDER_PREFIX = "together_ai"   # litellm provider prefix
-LLM_MODEL = "Qwen/Qwen3-235B-A22B-Instruct-2507-tput"
-LLM_BASE_URL = None                   # set to e.g. "http://localhost:11434/v1" for Ollama
-```
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `LLM_PROVIDER_PREFIX` | `together_ai` | litellm provider prefix |
+| `LLM_MODEL` | `Qwen/Qwen3-235B-A22B-Instruct-2507-tput` | Model name (without provider prefix) |
+| `LLM_BASE_URL` | `None` | Override API base URL (e.g. `http://localhost:11434/v1` for Ollama) |
 
 ### Supported Providers
 
@@ -219,43 +200,15 @@ Use 32B+ parameter models for reliable selector inference. Cost is negligible at
 
 2. **LLM inference** (if configured): Sends the form's HTML to the LLM, which returns a JSON mapping of logical field names to CSS selectors.
 
-3. **Heuristic fallback**: For each field, tries CSS selector patterns from `field_config.json` in order, using the first visible, editable, non-CAPTCHA match.
+3. **Heuristic fallback**: For each field, tries built-in CSS selector patterns in order, using the first visible, editable, non-CAPTCHA match.
 
 LLM selectors are tried first per field; if they fail, heuristics take over for that field.
 
-## Adding Custom Selectors
-
-Edit `field_config.json` → `selectors` to add CSS patterns for field naming conventions you encounter:
-
-```json
-{
-  "selectors": {
-    "email": [
-      "input[type=\"email\"]",
-      "input[name=\"your_email\"]"
-    ]
-  }
-}
-```
-
 ## Database
 
-Contacts are saved to `Tools/contacts.db` (shared with the tracker server).
+Contacts are saved to `code-to-client-tools/contacts.db` (shared with the tracker server).
 
 - **On Save**: Inserts the URL with `CONTACT_SOURCE = CONTACT_FORM`, `STATUS = CONTACTED`, and the `VERTICAL`, `CITY`, `STATE`, `ZIP` values from the params file.
 - **Duplicate prevention**: URLs already in the database are skipped before opening the browser.
 - **Initialize**: Run `python3 ../tracker-server/create_db.py` to create the database and tables.
 
-## Troubleshooting
-
-**`ModuleNotFoundError: No module named 'contact_form'`**
-Run `poetry install` to register the package in the virtual environment, then use `python -m autofiller...` (not `python src/autofiller/...`).
-
-**Fields not filling**
-The tool prints which selectors it tries. Open browser DevTools to inspect the form's HTML and add matching patterns to `field_config.json`, or enable LLM for automatic inference.
-
-**Form not detected**
-The tool picks the highest-scoring `<form>` element. If the page has no `<form>` tag (e.g. JavaScript-rendered forms), the tool falls back to heuristic selectors applied to the full page.
-
-**LLM not working**
-Check that `LLM_API_KEY` is set in `.env`, and that `LLM_PROVIDER_PREFIX`/`LLM_MODEL`/`LLM_BASE_URL` in `config.py` match your provider. For Ollama, ensure `ollama serve` is running and the model is pulled.

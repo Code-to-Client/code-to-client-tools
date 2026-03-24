@@ -2,22 +2,17 @@
 
 from playwright.sync_api import Page
 
-from autofiller.field_config import get_field_config
+from autofiller.field_config import get_selectors
 
 
 def get_heuristic_selectors() -> dict[str, list[str]]:
     """
     Get heuristic CSS selector lists for common contact form fields.
 
-    Loads selectors from field_config.json file only.
-    Returns empty dict if config file is not found or has no selectors.
-
     Returns:
         Dict mapping logical field names to lists of CSS selectors to try in order
     """
-    config = get_field_config()
-    selectors = config.get("selectors", {})
-    return selectors
+    return get_selectors()
 
 
 def find_and_fill_first(

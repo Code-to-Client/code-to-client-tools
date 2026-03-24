@@ -11,10 +11,10 @@ python3 ../tracker-server/create_db.py
 ## main
 > Submit contact forms for contact page URLs via browser
 
-- Input: contact pages file paths - `contacts/bookkeeper-contacts-{city}.json`
+- Input: File containing the contact pages URLs 
 - Output: Insert contact URLs in DB
 
 ```bash
-    poetry run python -m autofiller.main params/Bookkeeping-portland.json
+    poetry run python -m autofiller.main params/params-legal-portland.json
 ```
 

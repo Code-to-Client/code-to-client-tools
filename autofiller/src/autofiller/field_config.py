@@ -1,41 +1,120 @@
-"""Load and cache field configuration from field_config.json."""
+"""Heuristic CSS selector lists for common contact form fields."""
 
-import json
+SELECTORS: dict[str, list[str]] = {
+    "name": [
+        "input[name=\"name\"]",
+        "input[name=\"your-name\"]",
+        "input[name=\"contact-name\"]",
+        "input[name*=\"name\"]",
+        "input[id*=\"name\"]",
+        "input[id=\"name\"]",
+        "input[id=\"your-name\"]",
+        "input[placeholder*=\"name\"]",
+        "input[placeholder*=\"Name\"]",
+        "input[autocomplete=\"name\"]",
+    ],
+    "email": [
+        "input[type=\"email\"]",
+        "input[name*=\"mail\"]",
+        "input[id*=\"mail\"]",
+        "input[placeholder*=\"mail\"]",
+    ],
+    "subject": [
+        "input[name=\"subject\"]",
+        "input[name=\"your-subject\"]",
+        "input[name=\"contact-subject\"]",
+        "input[name*=\"subject\"]",
+        "input[id*=\"subject\"]",
+        "input[id=\"subject\"]",
+        "input[id=\"your-subject\"]",
+        "input[placeholder*=\"subject\"]",
+        "input[placeholder*=\"Subject\"]",
+    ],
+    "message": [
+        "textarea[name=\"message\"]",
+        "textarea[name*=\"message\"]",
+        "textarea[id*=\"message\"]",
+        "textarea[placeholder*=\"message\"]",
+        "textarea",
+    ],
+    "phone": [
+        "input[type=\"tel\"]",
+        "input[name=\"phone\"]",
+        "input[name=\"your-phone\"]",
+        "input[name=\"phone-number\"]",
+        "input[name=\"phone_number\"]",
+        "input[name=\"contact-phone\"]",
+        "input[name*=\"phone\"]",
+        "input[id*=\"phone\"]",
+        "input[id=\"phone\"]",
+        "input[id=\"your-phone\"]",
+        "input[id=\"phone-number\"]",
+        "input[placeholder*=\"phone\"]",
+        "input[placeholder*=\"Phone\"]",
+        "input[placeholder*=\"Phone Number\"]",
+        "input[autocomplete=\"tel\"]",
+    ],
+    "first_name": [
+        "input[name=\"first-name\"]",
+        "input[name=\"first_name\"]",
+        "input[name=\"firstName\"]",
+        "input[name=\"fname\"]",
+        "input[name*=\"first\"]",
+        "input[id*=\"first\"]",
+        "input[id=\"first-name\"]",
+        "input[id=\"first_name\"]",
+        "input[id=\"firstName\"]",
+        "input[id=\"fname\"]",
+        "input[placeholder*=\"first\"]",
+        "input[placeholder*=\"First\"]",
+        "input[autocomplete=\"given-name\"]",
+    ],
+    "last_name": [
+        "input[name=\"last-name\"]",
+        "input[name=\"last_name\"]",
+        "input[name=\"lastName\"]",
+        "input[name=\"lname\"]",
+        "input[name=\"surname\"]",
+        "input[name*=\"last\"]",
+        "input[id*=\"last\"]",
+        "input[id=\"last-name\"]",
+        "input[id=\"last_name\"]",
+        "input[id=\"lastName\"]",
+        "input[id=\"lname\"]",
+        "input[id=\"surname\"]",
+        "input[placeholder*=\"last\"]",
+        "input[placeholder*=\"Last\"]",
+        "input[placeholder*=\"Surname\"]",
+        "input[autocomplete=\"family-name\"]",
+    ],
+    "company": [
+        "input[name=\"company\"]",
+        "input[name=\"company-name\"]",
+        "input[name=\"company_name\"]",
+        "input[name=\"companyName\"]",
+        "input[name=\"organization\"]",
+        "input[name=\"org\"]",
+        "input[name=\"business-name\"]",
+        "input[name=\"business_name\"]",
+        "input[name*=\"company\"]",
+        "input[name*=\"organization\"]",
+        "input[id*=\"company\"]",
+        "input[id=\"company\"]",
+        "input[id=\"company-name\"]",
+        "input[id=\"company_name\"]",
+        "input[id=\"organization\"]",
+        "input[id=\"org\"]",
+        "input[id=\"business-name\"]",
+        "input[placeholder*=\"company\"]",
+        "input[placeholder*=\"Company\"]",
+        "input[placeholder*=\"organization\"]",
+        "input[placeholder*=\"Organization\"]",
+        "input[placeholder*=\"business\"]",
+        "input[autocomplete=\"organization\"]",
+    ],
+}
 
-from autofiller.config import Config
 
-
-_field_config_cache: dict | None = None
-
-
-def get_field_config() -> dict:
-    """
-    Load field configuration from field_config.json.
-
-    Caches the result to avoid reading the file multiple times.
-    Falls back to empty dict if file is missing or invalid.
-
-    Returns:
-        Dict with keys: 'field_values' and 'selectors' (may be empty)
-    """
-    global _field_config_cache
-
-    if _field_config_cache is not None:
-        return _field_config_cache
-
-    default_config = {"field_values": {}, "selectors": {}}
-
-    try:
-        if Config.FIELD_CONFIG_FILE.exists():
-            with open(Config.FIELD_CONFIG_FILE, "r", encoding="utf-8") as f:
-                config = json.load(f)
-                _field_config_cache = {
-                    "field_values": config.get("field_values", {}),
-                    "selectors": config.get("selectors", {}),
-                }
-                return _field_config_cache
-    except (json.JSONDecodeError, IOError) as e:  # noqa: BLE001
-        print(f"Warning: Could not load field_config.json: {e}. Using defaults.")
-
-    _field_config_cache = default_config
-    return _field_config_cache
+def get_selectors() -> dict[str, list[str]]:
+    """Return the heuristic CSS selector lists for contact form fields."""
+    return SELECTORS

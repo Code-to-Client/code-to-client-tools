@@ -6,9 +6,6 @@ from pathlib import Path
 class Config:
     """Configuration constants for the contact form autofiller."""
 
-    # File paths
-    FIELD_CONFIG_FILE = Path(__file__).parent.parent.parent / "field_config.json"
-
     # LLM Configuration Constants
     # Default provider is together_ai
     LLM_PROVIDER_PREFIX = "together_ai"

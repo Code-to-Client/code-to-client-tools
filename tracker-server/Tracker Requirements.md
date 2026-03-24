@@ -489,8 +489,8 @@ The Contact Form Autofiller script (Python + Playwright) writes directly to the 
 **CLI:** The script takes a single `--params_file` argument pointing to a JSON file that specifies per-batch runtime parameters:
 ```json
 {
-  "vertical": "Bookkeeping",
-  "contact_url_file": "contacts/bookkeeper-contacts.json",
+  "vertical": "Legal",
+  "contact_url_file": "contacts/contacts-legal-portland.json",
   "city": "Portland",
   "state": "OR",
   "zip": "97201"

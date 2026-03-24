@@ -7,15 +7,6 @@
 python3 create_db.py
 ```
 
-
-## init-contacts
-> Create the database and import contacts from CONTACTS.json
-
-```bash
-python3 init_contacts.py
-```
-
-
 ## main
 > Run the server
 

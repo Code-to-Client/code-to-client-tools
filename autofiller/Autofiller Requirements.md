@@ -32,12 +32,12 @@ The tool opens a browser, navigates to each contact form URL, pre-fills the fiel
 autofiller/
 ├── contacts/          # Contact URL files — one JSON array of URLs per batch
 ├── params/            # Runtime params files — one JSON object per batch
-├── field_config.json  # Your sender identity (name, email, message, selectors)
 ├── src/autofiller/    # Source code
+│   └── field_config.py  # Heuristic CSS selectors (hardcoded)
 └── .env               # LLM API key (optional)
 ```
 
-> **Note:** `contacts/` and `params/` are conventions, not requirements. Files can live anywhere — the params file simply references `contact_url_file` by path. Feel free to organize however suits your workflow, for example with subfolders per vertical (`contacts/bookkeeping/`, `params/bookkeeping/`) or any other structure.
+> **Note:** `contacts/` and `params/` are conventions, not requirements. Files can live anywhere — the params file simply references `contact_url_file` by path. Feel free to organize however suits your workflow, for example with subfolders per vertical (`contacts/legal/`, `params/legal/`) or any other structure.
 
 ---
 
@@ -73,13 +73,16 @@ The tool accepts a single argument: a path to a JSON params file. It can be prov
 |---------|-----------|------|----------|-------------|
 | Params file | 1st positional | `--params_file FILE` | Yes | Path to the JSON file with run parameters |
 
+**Naming convention:** `params-<vertical>-<location>.json`
+
 **Both of these are equivalent:**
+
 ```bash
 # Positional
-poetry run python -m autofiller.main params/bookkeeper-portland.json
+poetry run python -m autofiller.main params/params-legal-portland.json
 
 # Named flag
-poetry run python -m autofiller.main --params_file params/bookkeeper-portland.json
+poetry run python -m autofiller.main --params_file params/params-legal-portland.json
 ```
 
 #### Params File Format
@@ -88,8 +91,9 @@ A JSON object with the following fields:
 
 | Field | Required | Description |
 |-------|----------|-------------|
-| `vertical` | Yes | Vertical label saved to the database (e.g. `Bookkeeping`) |
+| `vertical` | Yes | Vertical label saved to the database (e.g. `Legal`) |
 | `contact_url_file` | Yes | Path to the JSON file containing contact form URLs |
+| `field_values` | Yes | Object with sender identity and message to pre-fill into forms |
 | `city` | No | City saved to `CONTACT_CITY` in the database |
 | `state` | No | State saved to `CONTACT_STATE` in the database |
 | `zip` | No | Postal code saved to `CONTACT_POSTAL_CODE` in the database |
@@ -97,11 +101,21 @@ A JSON object with the following fields:
 **Example:**
 ```json
 {
-  "vertical": "Bookkeeping",
-  "contact_url_file": "contacts/bookkeeper-contacts-portland.json",
+  "vertical": "Legal",
+  "contact_url_file": "contacts/contacts-legal-portland.json",
   "city": "Portland",
   "state": "OR",
-  "zip": "97201"
+  "zip": "97201",
+  "field_values": {
+    "name": "Jane Smith",
+    "first_name": "Jane",
+    "last_name": "Smith",
+    "company": "Acme, LLC",
+    "email": "jane@acme.com",
+    "phone": "503-555-0100",
+    "subject": "Partnership Inquiry",
+    "message": "Hello,\nWe'd love to connect..."
+  }
 }
 ```
 
@@ -113,25 +127,24 @@ A JSON array of contact form URLs, one per entry.
 
 ```json
 [
-  "https://example-bookkeeper.com/contact",
+  "https://example-legal.com/contact",
   "https://another-firm.com/contact-us",
   "https://thirdco.com/get-in-touch"
 ]
 ```
 
-**Naming convention:** `contacts/<vertical>-contacts-<location>.json`
-- Example: `contacts/bookkeeper-contacts-portland.json`
+**Naming convention:** `contacts-<vertical>-<location>.json`
+
+- Example: `contacts-portland.json`
 - The `contacts/` directory holds all URL lists, organized by vertical and city.
 
 ---
 
-### 5. Field Values and Selectors: `field_config.json`
+### 5. Field Values and Selectors
 
-`field_config.json` (in the project root) contains two sections:
+#### 5.1 `field_values` (in the params file)
 
-#### 4.1 `field_values`
-
-The contact information and message pre-filled into every form. Edit these before your first outreach session.
+Each params file includes a `field_values` object with the sender identity and message to pre-fill into forms. Because `field_values` lives in the params file, you can use different sender identities and messages for different outreach batches.
 
 | Field        | Description                                      |
 |-------------|--------------------------------------------------|
@@ -146,9 +159,9 @@ The contact information and message pre-filled into every form. Edit these befor
 
 **Name field handling:** If the form has separate `first_name` / `last_name` fields, the tool automatically splits the `name` value and fills them individually. If the form has only a single name field, `name` is used directly.
 
-#### 4.2 `selectors`
+#### 5.2 `selectors` (in `src/autofiller/field_config.py`)
 
-CSS selector patterns for each field, tried in order. The first matching, visible, and editable element is filled. Add selectors here to support non-standard form field naming conventions you encounter.
+CSS selector patterns for each field, tried in order. The first matching, visible, and editable element is filled. Edit `field_config.py` directly to add selectors for non-standard form field naming conventions you encounter.
 
 Selector lists exist for: `name`, `first_name`, `last_name`, `email`, `phone`, `subject`, `message`, `company`.
 
@@ -191,7 +204,7 @@ LLM selectors are tried first. If a selector fails at fill time, the tool falls 
 
 #### 6.2 Heuristic Selectors (always runs, fallback)
 
-The tool tries each CSS selector in the list for a field (from `field_config.json`) in order, and fills the first one that:
+The tool tries each CSS selector in the list for a field (from `field_config.py`) in order, and fills the first one that:
 - Exists on the page.
 - Is visible.
 - Is editable.
@@ -263,7 +276,7 @@ The tool writes to the shared `contacts.db` SQLite database in the `Tools/` pare
 | LLM integration   | litellm                          | Multi-provider abstraction; optional          |
 | Database          | SQLite3 (stdlib)                 | Shared `contacts.db` in `Tools/` folder       |
 | Package manager   | Poetry                           |                                               |
-| Configuration     | `field_config.json`, `.env`, `config.py` | Set once per installation            |
+| Configuration     | `field_config.py`, `.env`, `config.py`   | Set once per installation            |
 | Runtime params    | `params/*.json`                  | One file per outreach batch                   |
 
 ---
@@ -274,10 +287,10 @@ The tool uses two distinct categories of files:
 
 #### 10.1 Configuration files (set once per installation)
 
-These describe *who you are* and *how to fill forms*. Set them up once and reuse across all batches.
+These describe *how to fill forms*. Set them up once and reuse across all batches.
 
-**`field_config.json`**
-Your sender identity — the values pre-filled into every contact form. Edit `field_values` before your first run. Edit `selectors` to add CSS patterns for non-standard field naming conventions you encounter.
+**`src/autofiller/field_config.py`**
+Heuristic CSS selector lists for each contact form field. Edit `SELECTORS` directly to add patterns for non-standard field naming conventions you encounter.
 
 **`.env`**
 ```bash
@@ -291,16 +304,26 @@ Edit `LLM_PROVIDER_PREFIX`, `LLM_MODEL`, and `LLM_BASE_URL` to switch LLM provid
 
 #### 10.2 Runtime params files (one per batch)
 
-These describe *what to run* — the vertical, location, and URL list for a specific outreach batch. Create a new params file in `params/` for each batch.
+These describe *what to run* and *who you are* — the vertical, location, sender identity, and URL list for a specific outreach batch. Create a new params file in `params/` for each batch.
 
 **`params/<name>.json`**
 ```json
 {
-  "vertical": "Bookkeeping",
-  "contact_url_file": "contacts/bookkeeper-contacts-portland.json",
+  "vertical": "Legal",
+  "contact_url_file": "contacts/contacts-legal-portland.json",
   "city": "Portland",
   "state": "OR",
-  "zip": "97201"
+  "zip": "97201",
+  "field_values": {
+    "name": "Jane Smith",
+    "first_name": "Jane",
+    "last_name": "Smith",
+    "company": "Acme, LLC",
+    "email": "jane@acme.com",
+    "phone": "503-555-0100",
+    "subject": "Partnership Inquiry",
+    "message": "Hello,\nWe'd love to connect..."
+  }
 }
 ```
 
@@ -320,7 +343,7 @@ playwright install chromium
 python3 ../tracker-server/create_db.py
 
 # Run a batch
-poetry run python -m autofiller.main params/bookkeeper-portland.json
+poetry run python -m autofiller.main params/params-legal-portland.json
 # or using the flag form:
-poetry run python -m autofiller.main --params_file params/bookkeeper-portland.json
+poetry run python -m autofiller.main --params_file params/params-legal-portland.json
 ```
