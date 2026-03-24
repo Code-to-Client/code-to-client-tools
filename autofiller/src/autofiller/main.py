@@ -351,6 +351,7 @@ if __name__ == "__main__":
     field_values = params.get("field_values", {})
     if not field_values:
         print("Warning: No field_values found in params file. Using empty dict.")
+    field_values = {k: "\n".join(v) if isinstance(v, list) else v for k, v in field_values.items()}
 
     main(
         Path(contact_url_file),

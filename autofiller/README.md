@@ -92,12 +92,17 @@ Sample params file `params-legal-portland.json`:
     "phone": "555-555-5555",
     "company": "Your Company",
     "subject": "Inquiry",
-    "message": "Your outreach message here."
+    "message": [
+      "Your outreach message here.",
+      "Second paragraph.",
+      "Sincerely,",
+      "Your Name"
+    ]
   }
 }
 ```
 
-`city`, `state`, and `zip` are optional and can be omitted or set to empty strings. All fields within `field_values` are required.
+`city`, `state`, and `zip` are optional and can be omitted or set to empty strings. All fields within `field_values` are required. The `message` field accepts either a string or an array of strings — array lines are joined with newlines at runtime.
 
 ## Task runner (mask) — optional
 

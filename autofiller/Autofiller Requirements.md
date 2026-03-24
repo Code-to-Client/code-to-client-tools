@@ -114,12 +114,17 @@ A JSON object with the following fields:
     "email": "jane@acme.com",
     "phone": "503-555-0100",
     "subject": "Partnership Inquiry",
-    "message": "Hello,\nWe'd love to connect..."
+    "message": [
+      "Hello,",
+      "We'd love to connect...",
+      "Sincerely,",
+      "Jane Smith"
+    ]
   }
 }
 ```
 
-`city`, `state`, and `zip` are optional and can be omitted or set to empty strings.
+`city`, `state`, and `zip` are optional and can be omitted or set to empty strings. The `message` field accepts either a string or an array of strings — array lines are joined with newlines at runtime.
 
 #### Contact Pages File Format
 
@@ -155,7 +160,7 @@ Each params file includes a `field_values` object with the sender identity and m
 | `email`      | Your email address                               |
 | `phone`      | Your phone number                                |
 | `subject`    | Message subject line                             |
-| `message`    | The outreach message body                        |
+| `message`    | The outreach message body — string or array of strings (lines joined with newlines at runtime) |
 
 **Name field handling:** If the form has separate `first_name` / `last_name` fields, the tool automatically splits the `name` value and fills them individually. If the form has only a single name field, `name` is used directly.
 
@@ -322,7 +327,12 @@ These describe *what to run* and *who you are* — the vertical, location, sende
     "email": "jane@acme.com",
     "phone": "503-555-0100",
     "subject": "Partnership Inquiry",
-    "message": "Hello,\nWe'd love to connect..."
+    "message": [
+      "Hello,",
+      "We'd love to connect...",
+      "Sincerely,",
+      "Jane Smith"
+    ]
   }
 }
 ```
