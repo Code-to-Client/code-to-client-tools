@@ -1,19 +1,6 @@
 # Contact Form Outreach Tracker — API Server
 
-Backend for the **Contact Form Outreach Tracker** (see [Contact Form Tracker Requirements](../../business/Book/Tools/Contact%20Form%20Tracker%20Requirements%20-%20Technical.md)). It uses the **same SQLite database** as the [autofiller](../../autofiller) autofiller script (`contacts.db`), so contacts submitted by the script appear in the tracker and vice versa.
-
-## Setup and run (pip)
-
-```bash
-cd tracker-server
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-pip install -e .
-python -m tracker_server.main
-```
-
-Server runs at `http://localhost:8000`. API docs: `http://localhost:8000/docs`
+Backend for the **Contact Form Outreach Tracker** (see [Tracker Requirements](Tracker%20Requirements.md)). It uses the **same SQLite database** as the [autofiller](../../autofiller) autofiller script (`contacts.db`), so contacts submitted by the script appear in the tracker and vice versa.
 
 ## Setup and run (Poetry)
 
@@ -22,6 +9,8 @@ cd tracker-server
 poetry install
 poetry run python -m tracker_server.main
 ```
+
+Server runs at `http://localhost:8000`. API docs: `http://localhost:8000/docs`
 
 ## Database
 

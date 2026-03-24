@@ -17,9 +17,10 @@
 
 - Supports multiple verticals with per-vertical and aggregate dashboard views.
 - Integrates with the Autofiller script via a shared SQLite database.
-- No auth, no multi-tenant logic, no Pro features (import/export UI, analytics, reminders, etc.).
+- No auth, no multi-tenant logic.
 
 **High-level architecture:**
+
 - **Frontend:** Nuxt 4 app (Vue 3 + Vite), running in SPA/client mode for this local, single-user tool.
 - **Backend:** FastAPI app exposing a small REST API.
 - **Database:** SQLite file, shared with the Autofiller script.
@@ -44,7 +45,7 @@
 
 **Styling and theming:**
 
-- Use Element Plus default light/dark themes; do not add a heavy custom design system in MVP.
+- Use Element Plus default light/dark themes; do not add a heavy custom design system.
 - UnoCSS for layout, spacing, and light tweaks around Element Plus components.
 - Colors and shortcuts in `uno.config.ts`; Element Plus CSS variable overrides in a single global stylesheet.
 - README should include a short "How to change colors" section.

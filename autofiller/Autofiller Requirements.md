@@ -17,12 +17,7 @@ The tool opens a browser, navigates to each contact form URL, pre-fills the fiel
 - Detects the contact form on the page and fills in the fields.
 - Waits for you to review the pre-filled form and submit it manually.
 - On your instruction, saves the submitted URL to the shared `contacts.db` database.
-- Skips URLs already in the database (no duplicate submissions).
-
-**Out of scope for MVP:**
-- Automatic form submission (always human-in-the-loop).
-- Scraping contact URLs (URLs are provided manually).
-- Email or social media outreach.
+- Skips URLs already in the database (no duplicate submissions)..
 
 ---
 
@@ -251,9 +246,10 @@ If an error occurs processing a URL (e.g. page load failure), the tool asks whet
 
 ### 9. Database Integration
 
-The tool writes to the shared `contacts.db` SQLite database in the `Tools/` parent folder (the same database the tracker reads from).
+The tool writes to the shared `contacts.db` SQLite database in the `code-to-client-tools/` parent folder (the same database the tracker reads from).
 
 **On Save:** Inserts a new row into the `CONTACTS` table with:
+
 - `CONTACT_FORM_URL` = the submitted URL (UNIQUE; silently no-ops if already present).
 - `CONTACTED_AT` = current timestamp.
 - `CONTACT_SOURCE` = `CONTACT_FORM`.
@@ -268,7 +264,7 @@ The tool writes to the shared `contacts.db` SQLite database in the `Tools/` pare
 
 **Duplicate prevention:** Before navigating to each URL, the tool checks whether `CONTACT_FORM_URL` already exists in the database. If it does, the URL is skipped entirely (no browser navigation, no form filling) and a message is printed.
 
-**Database initialization:** On startup, the tool calls `create_db.py` in the `Tools/` folder to create the database and tables if they do not already exist.
+**Database initialization:** On startup, the tool calls `create_db.py` in the `code-to-client-tools/tracker-server/` folder to create the database and tables if they do not already exist.
 
 ---
 
@@ -279,7 +275,7 @@ The tool writes to the shared `contacts.db` SQLite database in the `Tools/` pare
 | Language          | Python 3.10+                     |                                               |
 | Browser automation| Playwright (Chromium)            | Runs in headed (visible) mode                 |
 | LLM integration   | litellm                          | Multi-provider abstraction; optional          |
-| Database          | SQLite3 (stdlib)                 | Shared `contacts.db` in `Tools/` folder       |
+| Database          | SQLite3 (stdlib)                 | Shared `contacts.db` in `code-to-client-tools/` folder |
 | Package manager   | Poetry                           |                                               |
 | Configuration     | `field_config.py`, `.env`, `config.py`   | Set once per installation            |
 | Runtime params    | `params/*.json`                  | One file per outreach batch                   |
