@@ -19,6 +19,7 @@ A Python CLI tool that opens contact forms in a browser and pre-fills your outre
 ```bash
 cd autofiller
 poetry install
+poetry run playwright install chromium
 poetry run python -m autofiller.main params/your-params.json
 ```
 
