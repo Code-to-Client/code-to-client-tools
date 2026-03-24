@@ -237,7 +237,7 @@ def autofill_multiple_contact_forms(
     Args:
         urls: List of URLs to process
         logical_field_values: Dict of field names to values (same for all forms)
-        vertical: Vertical label saved to the database (e.g. 'Bookkeeping')
+        vertical: Vertical label saved to the database (e.g. 'Legal')
         city: Contact city saved to the database (optional)
         state: Contact state saved to the database (optional)
         zip_code: Contact postal code saved to the database (optional)
